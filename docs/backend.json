@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "user": {
+      "title": "User",
+      "description": "A user of the application, typically a student or administrator.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The user's unique ID." },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string", "format": "uri" },
+        "role": { "type": "string", "enum": ["student", "admin"] },
+        "schoolId": { "type": "string" },
+        "classId": { "type": "string" },
+        "yearbookSubmitted": { "type": "boolean" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "school": {
+      "title": "School",
+      "description": "An educational institution.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "city": { "type": "string" },
+        "district": { "type": "string" }
+      },
+      "required": ["name"]
+    },
+    "yearbookPage": {
+      "title": "Yearbook Page",
+      "description": "A student's personal page in the yearbook.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "quote": { "type": "string" },
+        "memories": { "type": "string" },
+        "profilePhotoUrl": { "type": "string", "format": "uri" },
+        "galleryPhotoUrls": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" }
+        }
+      },
+      "required": ["userId"]
+    }
+  },
+  "auth": {
+    "providers": ["email"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/user" },
+      "description": "Stores public profiles for all users."
+    },
+    "/schools/{schoolId}": {
+      "schema": { "$ref": "#/entities/school" },
+      "description": "List of all schools."
+    },
+    "/schools/{schoolId}/yearbooks/{year}/pages/{userId}": {
+      "schema": { "$ref": "#/entities/yearbookPage" },
+      "description": "Individual student pages for a school's yearbook for a specific year."
+    },
+    "/schools/{schoolId}/classes/{classId}/yearbooks/{year}/pages/{userId}": {
+      "schema": { "$ref": "#/entities/yearbookPage" },
+      "description": "Individual student pages for a specific class within a school's yearbook."
+    }
+  }
+}
